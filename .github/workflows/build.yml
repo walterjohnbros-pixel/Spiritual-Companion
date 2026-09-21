@@ -1,3 +1,4 @@
+
 name: Build Android App
 
 on:
@@ -16,6 +17,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      - name: Install Gradle & Generate Wrapper
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gradle
+          gradle wrapper
 
       - name: Build with Gradle
         run: |
