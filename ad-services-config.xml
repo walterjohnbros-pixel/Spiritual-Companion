@@ -1,0 +1,5 @@
+<ad-services-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <attribution allowAllToAccess="false" allowAdPartnersToBind="false" />
+    <topics allowAllToAccess="false" allowAdPartnersToBind="false" />
+    <protected-audience allowAllToAccess="false" />
+</ad-services-config>
