@@ -17,7 +17,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Gradle & Generate Modern Wrapper
+      - name: Check Workspace Files
+        run: |
+          ls -la
+
+      - name: Install Gradle & Generate Wrapper
         run: |
           sudo apt-get update
           sudo apt-get install -y gradle
