@@ -19,7 +19,6 @@ jobs:
 
       - name: Generate Complete Android Project Structure
         run: |
-          # Create root settings and build files
           cat << 'EOF' > settings.gradle.kts
           pluginManagement {
               repositories {
@@ -45,7 +44,6 @@ jobs:
           }
           EOF
 
-          # Create app module structure
           mkdir -p app/src/main
           
           cat << 'EOF' > app/build.gradle.kts
@@ -84,6 +82,6 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          gradle wrapper --gradle-version 8.5
+          gradle wrapper --gradle-version 8.2
           chmod +x gradlew
           ./gradlew assembleDebug
