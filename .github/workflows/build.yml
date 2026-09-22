@@ -17,11 +17,22 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Create Gradle Wrapper
+      - name: Setup Gradle & Project Files
         run: |
-          gradle wrapper --gradle-version 8.5
+          # Create settings.gradle.kts if missing
+          if [ ! -f settings.gradle.kts ] && [ ! -f settings.gradle ]; then
+            echo 'rootProject.name = "Spiritual-Companion"' > settings.gradle.kts
+          fi
+          
+          # Ensure a valid build file exists
+          if [ -f Build.gradle.kt ]; then
+            mv Build.gradle.kt build.gradle.kts
+          elif [ ! -f build.gradle.kts ] && [ ! -f build.gradle ]; then
+            echo 'plugins { id("com.android.application") version "8.1.0" apply false }' > build.gradle.kts
+          fi
 
       - name: Build with Gradle
         run: |
+          gradle wrapper --gradle-version 8.5
           chmod +x gradlew
           ./gradlew assembleDebug
