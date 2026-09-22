@@ -19,18 +19,20 @@ jobs:
 
       - name: Setup Gradle & Project Files
         run: |
-          # Create settings.gradle.kts if missing
+          # Ensure settings.gradle.kts exists
           if [ ! -f settings.gradle.kts ] && [ ! -f settings.gradle ]; then
             echo 'rootProject.name = "Spiritual-Companion"' > settings.gradle.kts
           fi
           
-          # Create version catalog directory if missing and prevent unresolved references
-          mkdir -p gradle
-          if [ ! -f gradle/libs.versions.toml ]; then
-            echo '[versions]' > gradle/libs.versions.toml
-            echo 'google-services = "4.4.1"' >> gradle/libs.versions.toml
-            echo '[plugins]' >> gradle/libs.versions.toml
-            echo 'google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }' >> gradle/libs.versions.toml
+          # Ensure build.gradle.kts has the Android application plugin
+          if [ ! -f build.gradle.kts ] && [ ! -f build.gradle ]; then
+            echo 'plugins { id("com.android.application") version "8.1.0" apply true }' > build.gradle.kts
+          else
+            # Append android plugin if missing
+            TARGET_FILE=$([ -f build.gradle.kts ] && echo "build.gradle.kts" || echo "build.gradle")
+            if ! grep -q "com.android.application" "$TARGET_FILE"; then
+              echo 'plugins { id("com.android.application") version "8.1.0" apply true }' >> "$TARGET_FILE"
+            fi
           fi
 
       - name: Build with Gradle
