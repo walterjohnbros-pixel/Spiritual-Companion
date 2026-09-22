@@ -19,21 +19,31 @@ jobs:
 
       - name: Setup Gradle & Project Files
         run: |
-          # Ensure settings.gradle.kts exists
-          if [ ! -f settings.gradle.kts ] && [ ! -f settings.gradle ]; then
-            echo 'rootProject.name = "Spiritual-Companion"' > settings.gradle.kts
-          fi
-          
-          # Ensure build.gradle.kts has the Android application plugin
-          if [ ! -f build.gradle.kts ] && [ ! -f build.gradle ]; then
-            echo 'plugins { id("com.android.application") version "8.1.0" apply true }' > build.gradle.kts
-          else
-            # Append android plugin if missing
-            TARGET_FILE=$([ -f build.gradle.kts ] && echo "build.gradle.kts" || echo "build.gradle")
-            if ! grep -q "com.android.application" "$TARGET_FILE"; then
-              echo 'plugins { id("com.android.application") version "8.1.0" apply true }' >> "$TARGET_FILE"
-            fi
-          fi
+          # Create settings.gradle.kts with plugin repositories
+          cat << 'EOF' > settings.gradle.kts
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          rootProject.name = "Spiritual-Companion"
+          EOF
+
+          # Ensure a valid build file exists with the plugin
+          cat << 'EOF' > build.gradle.kts
+          plugins {
+              id("com.android.application") version "8.1.0" apply false
+          }
+          EOF
 
       - name: Build with Gradle
         run: |
