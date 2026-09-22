@@ -24,11 +24,13 @@ jobs:
             echo 'rootProject.name = "Spiritual-Companion"' > settings.gradle.kts
           fi
           
-          # Ensure a valid build file exists
-          if [ -f Build.gradle.kt ]; then
-            mv Build.gradle.kt build.gradle.kts
-          elif [ ! -f build.gradle.kts ] && [ ! -f build.gradle ]; then
-            echo 'plugins { id("com.android.application") version "8.1.0" apply false }' > build.gradle.kts
+          # Create version catalog directory if missing and prevent unresolved references
+          mkdir -p gradle
+          if [ ! -f gradle/libs.versions.toml ]; then
+            echo '[versions]' > gradle/libs.versions.toml
+            echo 'google-services = "4.4.1"' >> gradle/libs.versions.toml
+            echo '[plugins]' >> gradle/libs.versions.toml
+            echo 'google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }' >> gradle/libs.versions.toml
           fi
 
       - name: Build with Gradle
