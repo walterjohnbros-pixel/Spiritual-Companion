@@ -17,9 +17,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Gradle & Project Files
+      - name: Generate Complete Android Project Structure
         run: |
-          # Create settings.gradle.kts with plugin repositories
+          # Create root settings and build files
           cat << 'EOF' > settings.gradle.kts
           pluginManagement {
               repositories {
@@ -36,13 +36,50 @@ jobs:
               }
           }
           rootProject.name = "Spiritual-Companion"
+          include(":app")
           EOF
 
-          # Ensure a valid build file exists with the plugin
           cat << 'EOF' > build.gradle.kts
           plugins {
               id("com.android.application") version "8.1.0" apply false
           }
+          EOF
+
+          # Create app module structure
+          mkdir -p app/src/main
+          
+          cat << 'EOF' > app/build.gradle.kts
+          plugins {
+              id("com.android.application")
+          }
+          android {
+              namespace = "com.example.spiritualcompanion"
+              compileSdk = 34
+              defaultConfig {
+                  applicationId = "com.example.spiritualcompanion"
+                  minSdk = 24
+                  targetSdk = 34
+                  versionCode = 1
+                  versionName = "1.0"
+              }
+          }
+          EOF
+
+          cat << 'EOF' > app/src/main/AndroidManifest.xml
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <application
+                  android:allowBackup="true"
+                  android:label="Spiritual Companion">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
           EOF
 
       - name: Build with Gradle
