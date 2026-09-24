@@ -44,8 +44,18 @@ jobs:
           }
           EOF
 
-          mkdir -p app/src/main
-          
+          mkdir -p app/src/main/java/com/example/spiritualcompanion
+          mkdir -p gradle/wrapper
+
+          cat << 'EOF' > gradle/wrapper/gradle-wrapper.properties
+          distributionBase=GRADLE_USER_HOME
+          distributionPath=wrapper/dists
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.2-bin.zip
+          systemProp.file.encoding=UTF-8
+          zipStoreBase=GRADLE_USER_HOME
+          zipStorePath=wrapper/dists
+          EOF
+
           cat << 'EOF' > app/build.gradle.kts
           plugins {
               id("com.android.application")
@@ -78,6 +88,17 @@ jobs:
                   </activity>
               </application>
           </manifest>
+          EOF
+
+          cat << 'EOF' > app/src/main/java/com/example/spiritualcompanion/MainActivity.kt
+          package com.example.spiritualcompanion
+          import android.os.Bundle
+          import androidx.appcompat.app.AppCompatActivity
+          class MainActivity : AppCompatActivity() {
+              override fun onCreate(savedInstanceState: Bundle?) {
+                  super.onCreate(savedInstanceState)
+              }
+          }
           EOF
 
       - name: Build with Gradle
