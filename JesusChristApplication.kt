@@ -19,6 +19,8 @@ class JesusChristApplication : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         super.onCreate()
+        
+        // 1. Safe AdMob Initialization
         try {
             cleanupStaleWebViewSeed()
 
@@ -40,7 +42,12 @@ class JesusChristApplication : Application(), ImageLoaderFactory {
             Log.w("JesusChristApplication", "AdMob startup error: ${e.message}")
         }
 
-        PrayerReminderManager.createNotificationChannel(this)
+        // 2. Safe Notification Channel Creation
+        try {
+            PrayerReminderManager.createNotificationChannel(this)
+        } catch (e: Exception) {
+            Log.w("JesusChristApplication", "Notification channel error: ${e.message}")
+        }
     }
 
     private fun cleanupStaleWebViewSeed() {
